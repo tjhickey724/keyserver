@@ -1,0 +1,26 @@
+
+
+  <div class="jumbotron">
+    <h1> AppKey Registration </h1>
+    <p>Welcome to the Authentication Demo </p>
+
+  </div>
+
+      Your user PIN is <%= user.appKeyPIN %>
+      <hr>
+      You have registered the following apps:
+      <ul>
+        <% for(let i=0; i<appKeys.length; i++){
+          appKey = appKeys[i] %>
+          <li>
+            <%= appKey.name %> with key <%= appKey.key %>
+            <a href="/appKey/remove/<%=appKey._id%>">X</a>
+          </li>
+        <% } %>
+     </ul>
+
+  <form method="post" action="/appKey/addApp">
+    <h2>Register a new app</h2>
+    App name: <input type="text" name="name"><br>
+    <input type="submit">
+  </form>
