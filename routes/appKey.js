@@ -31,13 +31,7 @@ const generateKey = () => {
 router.get('/',
   isLoggedIn,
   async (req, res, next) => {
-    if (!req.user.appKeyPIN){
-      req.user.appKeyPIN =  generateKey()
-      console.log(`req.user.appKeyPIN=${req.user.appKeyPIN}`)
-      await req.user.save()
-    }
     res.locals.appKeys = await AppKey.find({ownerId:req.user._id})
-
     res.render('appKey');
 });
 
@@ -81,18 +75,16 @@ router.post('/getData',
   }
 )
 
-router.post('/testing',
+router.post('/clearData',
   async (req,res,next) => {
-    res.json({body:req.body,result:'success'})
+    const userKey = req.body.userKey
+    const appKey = req.body.appKey
+    const mydata =
+        await AppData.deleteMany(
+          {appKey:appKey,userKey:userKey})
+    res.json(mydata)
   }
 )
-
-router.get('/testing',
-  async (req,res,next) => {
-    res.json({body:req.body,result:'success'})
-  }
-)
-
 
 
 router.post('/getNewUserKey',
@@ -100,6 +92,7 @@ router.post('/getNewUserKey',
     const appKey = req.body.appKey
     const userKey = await new UserKey({createdAt:new Date(),})
     console.log('generated new userKey: '+userKey.id)
+    await userKey.save()
     res.json({userKey:userKey.id})
   }
 )
